@@ -1,0 +1,7 @@
+{
+  "name": "chordpro",
+  "dependencies": {
+    "mocha": "*",
+    "chai": "*"
+  }
+}
