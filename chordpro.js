@@ -1,40 +1,28 @@
+
 module.exports = {
 
-  fromString: function(chordpro) {
+  fromString: function(input) {
     title = "";
     artist = "";
     lyrics = [];
 
-    lines = chordpro.split("\n");
+    lines = input.split("\n");
 
     for (i = 0; i < lines.length; i++) {
       line = lines[i].trim();
 
-      if (line.search("{t") >= 0) {
-        start = line.indexOf("{t:");
-        if (start >= 0) {
-          start += 3;
-        } else {
-          start = line.indexOf("{title:");
-          if (start >= 0) {
-            start += 7;
-          }
+      if (isaDirective(line)) {
+        directive = parseDirective(line);
+
+        if (directive.name == 'title') {
+          title = directive.value;
         }
-        end = line.indexOf("}");
-        if (start >= 0 && end > 0 && end > start) {
-          title = line.substring(start,end);
-        }
-      } else if (line.search("{st") >= 0) {
-        start = line.indexOf("{st:");
-        if (start >= 0) {
-          start += 4;
-        }
-        end = line.indexOf("}");
-        if (start >= 0 && end > 0 && end > start) {
-          artist = line.substring(start,end);
+        if (directive.name == 'subtitle') {
+          artist = directive.value;
         }
       } else {
-        lyrics.push(line);
+        lyric = parseLyric(line);
+        lyrics.push(lyric.text);
       }
     }
 
@@ -42,3 +30,31 @@ module.exports = {
   }
 
 };
+
+var directiveRegEx = /{([^}]+):([^}]+)}/;
+
+function isaDirective(line) {
+  return directiveRegEx.test(line);
+}
+
+function parseDirective(line) {
+  var matches = directiveRegEx.exec(line);
+
+  if (matches.length == 3) {
+    if (matches[1] == 't') {
+      matches[1] = 'title';
+    }
+    if (matches[1] == 'st') {
+      matches[1] = 'subtitle';
+    }
+    return { name:matches[1] , value:matches[2] }
+  }
+
+  return {};
+}
+
+function parseLyric(line) {
+
+  return { text:line };
+
+}

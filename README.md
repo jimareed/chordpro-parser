@@ -7,6 +7,8 @@ parse chordpro files, e.g.
 {t:Greensleeves}
 {st:Traditional}
 
+{define: Am base-fret 0 frets x 0 2 2 1 0}
+
 A[Am]las, my [C]love, you [G]do me [Em]wrong,
 to [Am]cast me off disc[E]ourteously.
 For [Am]I have [C]loved you [G]well and [Em]long,
