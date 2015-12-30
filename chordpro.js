@@ -5,6 +5,7 @@ module.exports = {
     title = "";
     artist = "";
     lyrics = [];
+    chords = [];
 
     lines = input.split("\n");
 
@@ -21,12 +22,19 @@ module.exports = {
           artist = directive.value;
         }
       } else {
-        lyric = parseLyric(line);
-        lyrics.push(lyric.text);
+        if (i == lines.length-1 && !line) {
+          // ignore last line if it's empty
+        } else {
+          lyric = parseLyric(line);
+          lyrics.push(lyric.text);
+          for (c = 0; c < lyric.chords.length; c++) {
+            chords.push(lyric.chords[c]);
+          }
+        }
       }
     }
 
-    return { title:title , artist:artist , lyrics:lyrics };
+    return { title:title , artist:artist , lyrics:lyrics , chords:chords };
   }
 
 };
@@ -55,6 +63,28 @@ function parseDirective(line) {
 
 function parseLyric(line) {
 
-  return { text:line };
+  lyric = "";
+
+  isaChord = false;
+  chord = "";
+  linechords = [];
+
+  for (j=0; j < line.length; j++) {
+    if (line[j] == '[') {
+      isaChord = true;
+    } else if (line[j] == ']') {
+      isaChord = false;
+      linechords.push(chord);
+      chord = "";
+    } else {
+      if (isaChord) {
+        chord += line[j];
+      } else {
+        lyric += line[j];
+      }
+    }
+  }
+
+  return { text:lyric , chords:linechords };
 
 }
