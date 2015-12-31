@@ -24,7 +24,7 @@ module.exports = {
           artist = directive.value;
         }
         if (directive.name == 'define') {
-          chorddefinitions.push(getDefinition(directive.value));
+          chorddefinitions.push(parseDefinition(directive.value));
         }
       } else {
         if (i == lines.length-1 && !line) {
@@ -59,14 +59,47 @@ module.exports = {
 
     for (i = 0; i < defs.length; i++) {
       define = defs[i].define.substring(8,defs[i].define.length);
-      song.chorddefs.push(getDefinition(define));
+      if (!hasDefinition(song.chorddefs, defs[i].name)) {
+        song.chorddefs.push(parseDefinition(define));
+      }
     }
 
     return song;
+  },
+
+  setChordSequence: function(song, sequence) {
+    newChordDefs = [];
+
+    for (i = 0; i < sequence.length; i++) {
+      newChordDefs.push(getDefinition(song.chorddefs, sequence[i]));
+    }
+
+    song.chorddefs = newChordDefs;
+    
+    return song;
   }
+
 };
 
-function getDefinition(definition) {
+function hasDefinition(chorddefs, name) {
+  for (d = 0; d < chorddefs.length; d++) {
+    if (chorddefs[d].name == name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function getDefinition(chorddefs, name) {
+  for (d = 0; d < chorddefs.length; d++) {
+    if (chorddefs[d].name == name) {
+      return chorddefs[d];
+    }
+  }
+  return {};
+}
+
+function parseDefinition(definition) {
   name = "";
   basefret = "";
   frets = [0,0,0,0,0,0];
