@@ -6,6 +6,8 @@ module.exports = {
     artist = "";
     lyrics = [];
     chords = [];
+    chorddefinitions = [];
+    lineNum = 0;
 
     lines = input.split("\n");
 
@@ -21,11 +23,14 @@ module.exports = {
         if (directive.name == 'subtitle') {
           artist = directive.value;
         }
+        if (directive.name == 'define') {
+          chorddefinitions.push(getDefinition(directive.value));
+        }
       } else {
         if (i == lines.length-1 && !line) {
           // ignore last line if it's empty
         } else {
-          lyric = parseLyric(line);
+          lyric = parseLyric(line, lineNum++);
           lyrics.push(lyric.text);
           for (c = 0; c < lyric.chords.length; c++) {
             chords.push(lyric.chords[c]);
@@ -34,10 +39,34 @@ module.exports = {
       }
     }
 
-    return { title:title , artist:artist , lyrics:lyrics , chords:chords };
+    return { title:title , artist:artist , lyrics:lyrics , chords:chords , chorddefs:chorddefinitions };
   }
 
 };
+
+function getDefinition(definition) {
+  name = "";
+  basefret = "";
+  frets = [0,0,0,0,0,0];
+
+  // {define: Am base-fret 0 frets x 0 2 2 1 0}
+  var defineRegEx = /([^}]+)\sbase-fret\s([^}]+)\sfrets\s([^}]+)\s([^}]+)\s([^}]+)\s([^}]+)\s([^}]+)\s([^}]+)/;
+
+  if (defineRegEx.test(definition)) {
+    match = defineRegEx.exec(definition);
+    name = match[1].trim();
+    basefret = parseInt(match[2]);
+    for (f = 0; f < frets.length; f++) {
+      if (match[3+f] == 'x') {
+        frets[f] = -1;
+      } else {
+        frets[f] = parseInt(match[3+f]);
+      }
+    }
+  }
+
+  return { name:name , basefret:basefret , frets:frets };
+}
 
 var directiveRegEx = /{([^}]+):([^}]+)}/;
 
@@ -61,25 +90,27 @@ function parseDirective(line) {
   return {};
 }
 
-function parseLyric(line) {
+function parseLyric(line, lineNum) {
 
   lyric = "";
 
   isaChord = false;
   chord = "";
   linechords = [];
+  col = 0;
 
   for (j=0; j < line.length; j++) {
     if (line[j] == '[') {
       isaChord = true;
     } else if (line[j] == ']') {
       isaChord = false;
-      linechords.push(chord);
+      linechords.push({ name:chord , line:lineNum , col:col });
       chord = "";
     } else {
       if (isaChord) {
         chord += line[j];
       } else {
+        col++;
         lyric += line[j];
       }
     }
