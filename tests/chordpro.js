@@ -76,5 +76,31 @@ describe('#chordpro', function() {
     song.chorddefs[1].frets[2].should.equal(0);
   });
 
+  it('distinct chords', function() {
+    song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
+    "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n" +
+    "to [Am]cast me off so dis[E]courteously.\n");
+
+    chords = chordpro.distinctChords(song);
+    chords.length.should.equal(5);
+    chords[0].should.equal("Am");
+    chords[1].should.equal("C");
+    chords[2].should.equal("G");
+    chords[3].should.equal("Em");
+    chords[4].should.equal("E");
+  });
+
+  it('add defs', function() {
+    song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
+      "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
+      "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n");
+    song.chorddefs.length.should.equal(1);
+    song.chorddefs[0].name.should.equal("Am");
+
+    song = chordpro.addDefs(song, [{ name:"G" , define:"{define: G base-fret 0 frets 3 2 0 0 0 3"}]);
+    song.chorddefs.length.should.equal(2);
+    song.chorddefs[0].name.should.equal("Am");
+    song.chorddefs[1].name.should.equal("G");
+  });
 
 });

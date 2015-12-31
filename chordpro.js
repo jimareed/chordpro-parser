@@ -40,8 +40,30 @@ module.exports = {
     }
 
     return { title:title , artist:artist , lyrics:lyrics , chords:chords , chorddefs:chorddefinitions };
-  }
+  },
 
+  distinctChords: function(song) {
+    distinct = [];
+
+    for (i = 0; i < song.chords.length; i++) {
+      found = false;
+      if (distinct.indexOf(song.chords[i].name) == -1) {
+        distinct.push(song.chords[i].name);
+      }
+    }
+
+    return distinct;
+  },
+
+  addDefs: function(song, defs) {
+
+    for (i = 0; i < defs.length; i++) {
+      define = defs[i].define.substring(8,defs[i].define.length);
+      song.chorddefs.push(getDefinition(define));
+    }
+
+    return song;
+  }
 };
 
 function getDefinition(definition) {
