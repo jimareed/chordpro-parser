@@ -42,7 +42,7 @@ describe('#fretboard', function() {
     positions[0].string.should.equal(0);
     positions[0].fret.should.equal(0);
     positions[0].cx.should.equal(7);
-    positions[0].cy.should.equal(0);
+    positions[0].cy.should.equal(4);
     positions[6].string.should.equal(0);
     positions[6].fret.should.equal(1);
     positions[6].cx.should.equal(7);

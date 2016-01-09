@@ -22,7 +22,7 @@ module.exports = {
 
     positions = [];
 
-    for (f = 0; f < 4; f++) {
+    for (f = 0; f < 5; f++) {
       for (s = 0; s < 6; s++) {
         position = note2position({ string:s , fret:f});
 
@@ -51,6 +51,9 @@ function note2position(note) {
     position.cx = 15 * (note.string+1) / 2;
   } else {
     position.cx = 15 * note.string / 2 + 7;
+  }
+  if (note.fret == 0) {
+    position.cy = 4;
   }
   if (note.fret == 1) {
     position.cy = 11;
