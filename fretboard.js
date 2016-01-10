@@ -18,7 +18,7 @@ module.exports = {
     return positions;
   },
 
-  getFretboard: function() {
+  getFretboard: function(def) {
 
     positions = [];
 
@@ -26,23 +26,52 @@ module.exports = {
       for (s = 0; s < 6; s++) {
         position = note2position({ string:s , fret:f});
 
-        positions.push({ string:s , fret:f , cx:position.cx , cy:position.cy });
+        positions.push({ string:s , fret:f , cx:position.cx , cy:position.cy , selected:"0.05"});
       }
     }
 
-    return positions;
-  },
+    frets = def.frets;
 
-  selectFret: function(def, selected) {
-    if (selected.string < 0 || selected.string > 5) {
-      return def;
+    for (p = 0; p < positions.length; p++) {
+      for (i = 0; i < frets.length; i++) {
+        if (positions[p].string == i && frets[i] > 0 && positions[p].fret == frets[i]) {
+          positions[p].selected = "1.0";
+        }
+      }
     }
-    def.frets[selected.string] = selected.fret;
 
-    return def;
+    return { positions:positions , chorddef:def };
   },
+
+  selectNote: function(fretboard, position) {
+    var pos = parseInt(position);
+    if (pos < 0 || pos >= fretboard.positions.length) {
+      return fretboard;
+    }
+
+    ps = getStringPositions(pos);
+
+    for (i = 0; i < ps.length; i++) {
+      fretboard.positions[ps[i]].selected = "0.05";
+    }
+
+    fretboard.positions[pos].selected = "1.0";
+
+    return fretboard;
+  }
 
 };
+
+function getStringPositions(pos) {
+  ps = [];
+  string = pos % 6;
+
+  for (n = string; n < 30; n += 6) {
+    ps.push(n);
+  }
+
+  return ps;
+}
 
 function note2position(note) {
   position = { cx:0 , cy:0 };
@@ -68,5 +97,8 @@ function note2position(note) {
     position.cy = 33;
   }
 
+  if (position.cy == 0) {
+    position.cx
+  }
   return position;
 }

@@ -15,30 +15,10 @@ describe('#fretboard', function() {
     positions[2].cx.should.equal(37);
   });
 
-  it('can select no frets', function() {
-    def = fretboard.selectFret({ frets:[-1,0,2,2,1,0] } , { string:-1 , fret:0 } );
-    def.frets.length.should.equal(6);
-    def.frets[0].should.equal(-1);
-    def.frets[1].should.equal(0);
-    def.frets[2].should.equal(2);
-    def.frets[3].should.equal(2);
-    def.frets[4].should.equal(1);
-    def.frets[5].should.equal(0);
-  });
-
-  it('can select a fret', function() {
-    def = fretboard.selectFret({ frets:[-1,0,2,2,1,0] } , { string:2 , fret:3 } );
-    def.frets.length.should.equal(6);
-    def.frets[0].should.equal(-1);
-    def.frets[1].should.equal(0);
-    def.frets[2].should.equal(3);
-    def.frets[3].should.equal(2);
-    def.frets[4].should.equal(1);
-    def.frets[5].should.equal(0);
-  });
 
   it('should return the full fretboard', function() {
-    positions = fretboard.getFretboard();
+    fb = fretboard.getFretboard({frets:[]});
+    positions = fb.positions;
     positions[0].string.should.equal(0);
     positions[0].fret.should.equal(0);
     positions[0].cx.should.equal(7);
@@ -47,6 +27,31 @@ describe('#fretboard', function() {
     positions[6].fret.should.equal(1);
     positions[6].cx.should.equal(7);
     positions[6].cy.should.equal(11);
+  });
+
+  it('should return notes selected', function() {
+    fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
+    positions = fb.positions;
+    positions[9].selected.should.equal("0.05");
+    positions[10].selected.should.equal("1.0");
+    positions[11].selected.should.equal("0.05");
+  });
+
+  it('should select notes', function() {
+    fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
+    fb = fretboard.selectNote(fb, "11");
+    positions = fb.positions;
+    positions[9].selected.should.equal("0.05");
+    positions[10].selected.should.equal("1.0");
+    positions[11].selected.should.equal("1.0");
+  });
+
+  it('should unselect previous note on string', function() {
+    fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
+    fb = fretboard.selectNote(fb, "16");
+    positions = fb.positions;
+    positions[10].selected.should.equal("0.05");
+    positions[16].selected.should.equal("1.0");
   });
 
 });
