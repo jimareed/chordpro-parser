@@ -43,28 +43,43 @@ module.exports = {
     return { positions:positions , chorddef:def };
   },
 
-  selectNote: function(fretboard, position) {
-    var pos = parseInt(position);
-    if (pos < 0 || pos >= fretboard.positions.length) {
+  selectPositionId: function(fretboard, positionId) {
+    var pid = parseInt(positionId);
+    if (pid < 0 || pid >= fretboard.positions.length) {
       return fretboard;
     }
 
-    ps = getStringPositions(pos);
+    var isSelected = fretboard.positions[pid].selected == "1.0";
+
+    ps = getStringPositionIds(pid);
 
     for (i = 0; i < ps.length; i++) {
       fretboard.positions[ps[i]].selected = "0.05";
     }
 
-    fretboard.positions[pos].selected = "1.0";
+    if (!isSelected) {
+      fretboard.positions[pid].selected = "1.0";
+    }
+
+    note = positionId2note(pid);
+
+    fretboard.chorddef.frets[note.string] = note.fret;
 
     return fretboard;
   }
 
 };
 
-function getStringPositions(pos) {
+function positionId2note(pid) {
+  string = pid % 6;
+  fret = Math.floor(pid / 6);
+
+  return { string:string , fret:fret };
+}
+
+function getStringPositionIds(pid) {
   ps = [];
-  string = pos % 6;
+  string = pid % 6;
 
   for (n = string; n < 30; n += 6) {
     ps.push(n);

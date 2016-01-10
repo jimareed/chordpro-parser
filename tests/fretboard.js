@@ -39,7 +39,7 @@ describe('#fretboard', function() {
 
   it('should select notes', function() {
     fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
-    fb = fretboard.selectNote(fb, "11");
+    fb = fretboard.selectPositionId(fb, "11");
     positions = fb.positions;
     positions[9].selected.should.equal("0.05");
     positions[10].selected.should.equal("1.0");
@@ -48,10 +48,31 @@ describe('#fretboard', function() {
 
   it('should unselect previous note on string', function() {
     fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
-    fb = fretboard.selectNote(fb, "16");
+    fb = fretboard.selectPositionId(fb, "16");
     positions = fb.positions;
     positions[10].selected.should.equal("0.05");
     positions[16].selected.should.equal("1.0");
   });
+
+  it('should unselect a selected note', function() {
+    fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
+    fb = fretboard.selectPositionId(fb, "16");
+    positions = fb.positions;
+    positions[10].selected.should.equal("0.05");
+    positions[16].selected.should.equal("1.0");
+
+    fb = fretboard.selectPositionId(fb, "16");
+    positions = fb.positions;
+    positions[10].selected.should.equal("0.05");
+    positions[16].selected.should.equal("0.05");
+  });
+
+  it('should update chorddef when selecting notes', function() {
+    fb = fretboard.getFretboard({frets:[0,0,2,2,1,0]});
+    fb = fretboard.selectPositionId(fb, "11");
+    fb.chorddef.frets[4].should.equal(1);
+    fb.chorddef.frets[4].should.equal(1);
+  });
+
 
 });
