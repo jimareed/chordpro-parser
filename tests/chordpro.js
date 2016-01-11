@@ -3,7 +3,7 @@ var should = require('chai').should(),
 
 describe('#chordpro', function() {
 
-  it('title and artist', function() {
+  it('should parse title and artist', function() {
     song = chordpro.fromString("{t:Hello}");
     song.title.should.equal("Hello");
 
@@ -20,7 +20,7 @@ describe('#chordpro', function() {
     song.artist.should.equal("Artist 1");
   });
 
-  it('lyrics', function() {
+  it('should parse lyrics', function() {
     song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\nA[Am]las my [C]love,\nyou [G]do me [Em]wrong,\nto [Am]cast me off so dis[E]courteously.\n");
     song.title.should.equal("Greensleeves");
     song.artist.should.equal("Traditional");
@@ -30,7 +30,7 @@ describe('#chordpro', function() {
     song.lyrics[2].should.equal("to cast me off so discourteously.");
   });
 
-  it('chords', function() {
+  it('should parse chords', function() {
     song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\nA[Am]las my [C]love,\nyou [G]do me [Em]wrong,\nto [Am]cast me off so dis[E]courteously.\n");
     song.chords.length.should.equal(6);
     song.chords[0].name.should.equal("Am");
@@ -45,7 +45,7 @@ describe('#chordpro', function() {
     song.chords[5].name.should.equal("E");
   });
 
-  it('chord definitions', function() {
+  it('should parse chord definitions', function() {
     song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
       "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
       "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n");
@@ -76,7 +76,7 @@ describe('#chordpro', function() {
     song.chorddefs[1].frets[2].should.equal(0);
   });
 
-  it('distinct chords', function() {
+  it('should parse distinct chords', function() {
     song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
     "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n" +
     "to [Am]cast me off so dis[E]courteously.\n");
@@ -90,14 +90,14 @@ describe('#chordpro', function() {
     chords[4].should.equal("E");
   });
 
-  it('add defs', function() {
+  it('should support adding chorddefs', function() {
     song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
       "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
       "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n");
     song.chorddefs.length.should.equal(1);
     song.chorddefs[0].name.should.equal("Am");
 
-    song = chordpro.addDefs(song, [{ name:"G" , define:"{define: G base-fret 0 frets 3 2 0 0 0 3"}]);
+    song = chordpro.addDefs(song, [{ name:"G" , define:"{define: G base-fret 0 frets 3 2 0 0 0 3"}], { replace:false });
     song.chorddefs.length.should.equal(2);
     song.chorddefs[0].name.should.equal("Am");
     song.chorddefs[1].name.should.equal("G");
@@ -107,17 +107,43 @@ describe('#chordpro', function() {
       "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n");
 
     song = chordpro.addDefs(song, [
-      { name:"Am" , define:"{define: Am base-fret 0 frets x 0 2 2 1 0"},
-      { name:"C" , define:"{define: C base-fret 0 frets x 3 2 0 1 0"},
-      { name:"G" , define:"{define: G base-fret 0 frets 3 2 0 0 0 3"},
-      { name:"Em" , define:"{define: Em base-fret 0 frets 0 2 2 0 0 0"},
-    ]);
+        { name:"Am" , define:"{define: Am base-fret 0 frets x 0 2 2 1 0"},
+        { name:"C" , define:"{define: C base-fret 0 frets x 3 2 0 1 0"},
+        { name:"G" , define:"{define: G base-fret 0 frets 3 2 0 0 0 3"},
+        { name:"Em" , define:"{define: Em base-fret 0 frets 0 2 2 0 0 0"},
+      ],
+      { replace:false }
+    );
     song.chorddefs.length.should.equal(4);
     song.chorddefs[0].name.should.equal("C");
     song.chorddefs[0].frets[2].should.equal(5);
   });
 
-  it('setChordSequence', function() {
+  it('should support updating chorddefs', function() {
+    song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
+      "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
+      "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n");
+    song = chordpro.addDefs(song, [{ name:"Am" , define:"{define: Am base-fret 0 frets 5 7 7 5 5 5"}], { replace:true });
+    song.chorddefs.length.should.equal(1);
+    song.chorddefs[0].name.should.equal("Am");
+    song.chorddefs[0].frets[0].should.equal(5);
+  });
+
+  it('should support either chorddef format', function() {
+    song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n" +
+      "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
+      "A[Am]las my [C]love,\nyou [G]do me [Em]wrong,\n");
+    song.chorddefs.length.should.equal(1);
+    song.chorddefs[0].name.should.equal("Am");
+
+    song = chordpro.addDefs(song, [{ name:"G" , basefret:"0" , frets:[3,2,0,0,0,3] }], { replace:false });
+    song.chorddefs.length.should.equal(2);
+    song.chorddefs[0].name.should.equal("Am");
+    song.chorddefs[1].name.should.equal("G");
+    song.chorddefs[1].frets[1].should.equal(2);
+  });
+
+  it('should support setting the chord sequence', function() {
     song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n");
 
     song = chordpro.addDefs(song, [
@@ -125,7 +151,7 @@ describe('#chordpro', function() {
       { name:"C" , define:"{define: C base-fret 0 frets x 3 2 0 1 0"},
       { name:"G" , define:"{define: G base-fret 0 frets 3 2 0 0 0 3"},
       { name:"Em" , define:"{define: Em base-fret 0 frets 0 2 2 0 0 0"},
-    ]);
+    ], { replace:false });
 
     song = chordpro.setChordSequence(song, ["C","Am","Em","G"]);
     song.chorddefs.length.should.equal(4);
