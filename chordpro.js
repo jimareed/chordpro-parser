@@ -57,7 +57,11 @@ module.exports = {
 
   addDefs: function(song, defs, options) {
 
-    hasDefine = defs[0].hasOwnProperty('define');
+    if (defs.length == 0) {
+      return song;
+    }
+
+    var hasDefine = defs[0].hasOwnProperty('define');
 
     // replace first
     if (options.replace) {
