@@ -42,6 +42,32 @@ module.exports = {
     return { title:title , artist:artist , lyrics:lyrics , chords:chords , chorddefs:chorddefinitions };
   },
 
+  toString: function(song) {
+    string = "";
+
+    if (song.title != "") {
+      string += "{t:" + song.title + "}\n";
+    }
+    if (song.artist != "") {
+      string += "{st:" + song.artist + "}\n";
+    }
+
+    var chordNum = 0;
+    for (i = 0; i < song.lyrics.length; i++) {
+      lastCol = 0;
+      while (chordNum < song.chords.length && song.chords[chordNum].line == i) {
+        string += song.lyrics[i].substring(lastCol, song.chords[chordNum].col) + "["+ song.chords[chordNum].name + "]";
+        lastCol = song.chords[chordNum].col;
+        chordNum++;
+      }
+      string += song.lyrics[i].substring(lastCol, song.lyrics[i].length) + "\n";
+      if (chordNum < song.chords.length) {
+        chordNum--;
+      }
+    }
+    return string;
+  },
+
   distinctChords: function(song) {
     distinct = [];
 

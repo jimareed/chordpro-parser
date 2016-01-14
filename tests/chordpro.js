@@ -161,4 +161,28 @@ describe('#chordpro', function() {
     song.chorddefs[3].name.should.equal("G");
 
   });
+
+  it('should convert a song without chords to a string', function() {
+    song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\nAlas my love,\n");
+
+    string = chordpro.toString(song);
+
+    song2 = chordpro.fromString(string);
+    song2.title.should.equal("Greensleeves");
+    song2.artist.should.equal("Traditional");
+    song2.lyrics[0].should.equal("Alas my love,");
+  });
+
+  it('should convert a song with chords to a string', function() {
+    song = chordpro.fromString("1234[Am7]5678\n");
+
+    string = chordpro.toString(song);
+
+    song2 = chordpro.fromString(string);
+    song2.lyrics.length.should.equal(1);
+    song2.lyrics[0].should.equal("12345678");
+    song2.chords.length.should.equal(1);
+    song2.chords[0].name.should.equal("Am7");
+  });
+
 });
