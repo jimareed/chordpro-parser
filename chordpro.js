@@ -52,6 +52,24 @@ module.exports = {
       string += "{st:" + song.artist + "}\n";
     }
 
+    for (i = 0; i < song.chorddefs.length; i++) {
+      string += "{define: " + song.chorddefs[i].name +
+                " base-fret " + song.chorddefs[i].basefret.toString() +
+                " frets ";
+
+      for (f = 0; f < song.chorddefs[i].frets.length; f++) {
+        if (song.chorddefs[i].frets[f] < 0) {
+          string += "x";
+        } else {
+          string += song.chorddefs[i].frets[f].toString();
+        }
+        if (f < 5) {
+          string += " ";
+        }
+      }
+      string += "}\n"
+    }
+
     var chordNum = 0;
     for (i = 0; i < song.lyrics.length; i++) {
       lastCol = 0;

@@ -185,4 +185,15 @@ describe('#chordpro', function() {
     song2.chords[0].name.should.equal("Am7");
   });
 
+  it('should convert chorddefs to string', function() {
+    song = chordpro.fromString("{define: Am base-fret 0 frets x 0 2 2 1 0}\n");
+
+    string = chordpro.toString(song);
+
+    song2 = chordpro.fromString(string);
+    song2.chorddefs.length.should.equal(1);
+    song2.chorddefs[0].name = "Am";
+    song2.chorddefs[0].frets[4] = 1;
+  });
+
 });
