@@ -79,9 +79,6 @@ module.exports = {
         chordNum++;
       }
       string += song.lyrics[i].substring(lastCol, song.lyrics[i].length) + "\n";
-      if (chordNum < song.chords.length) {
-        chordNum--;
-      }
     }
     return string;
   },

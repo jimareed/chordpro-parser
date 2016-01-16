@@ -196,4 +196,28 @@ describe('#chordpro', function() {
     song2.chorddefs[0].frets[4] = 1;
   });
 
+  it('should convert a song with multiple lines to a string', function() {
+    song = chordpro.fromString("123\n4[Am7]5678\n");
+
+    string = chordpro.toString(song);
+
+    song2 = chordpro.fromString(string);
+    song2.lyrics.length.should.equal(2);
+    song2.lyrics[0].should.equal("123");
+    song2.chords.length.should.equal(1);
+    song2.chords[0].name.should.equal("Am7");
+  });
+
+  it('should convert a song with multiple chords to a string', function() {
+    song = chordpro.fromString("123\n4[A]5[B]678\n9[C]012[D]\n");
+
+    string = chordpro.toString(song);
+
+    song2 = chordpro.fromString(string);
+    song2.lyrics.length.should.equal(3);
+    song2.lyrics[0].should.equal("123");
+    song2.chords.length.should.equal(4);
+    song2.chords[3].name.should.equal("D");
+  });
+
 });
