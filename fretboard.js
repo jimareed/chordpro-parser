@@ -26,7 +26,7 @@ module.exports = {
       for (s = 0; s < 6; s++) {
         position = note2position({ string:s , fret:f});
 
-        positions.push({ string:s , fret:f , cx:position.cx , cy:position.cy , selected:"0.05"});
+        positions.push({ string:s , fret:f , cx:position.cx , cy:position.cy , selected:"0.0"});
       }
     }
 
@@ -54,7 +54,7 @@ module.exports = {
     ps = getStringPositionIds(pid);
 
     for (i = 0; i < ps.length; i++) {
-      fretboard.positions[ps[i]].selected = "0.05";
+      fretboard.positions[ps[i]].selected = "0.0";
     }
 
     if (!isSelected) {
@@ -63,7 +63,11 @@ module.exports = {
 
     note = positionId2note(pid);
 
-    fretboard.chorddef.frets[note.string] = note.fret;
+    if (isSelected) {
+      fretboard.chorddef.frets[note.string] = 0;
+    } else {
+      fretboard.chorddef.frets[note.string] = note.fret;
+    }
 
     return fretboard;
   }
