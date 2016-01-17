@@ -5,7 +5,7 @@ describe('#fretboard', function() {
 
   it('should return fret positions', function() {
 
-    positions = fretboard.getFingerPositions({ frets:[-1,0,2,2,1,0] });
+    positions = fretboard.getFingerPositions({ frets:[0,0,2,2,1,0] });
     positions.length.should.equal(3);
     positions[0].cy.should.equal(18);
     positions[1].cy.should.equal(18);
@@ -35,6 +35,10 @@ describe('#fretboard', function() {
     positions[9].selected.should.equal("0.0");
     positions[10].selected.should.equal("1.0");
     positions[11].selected.should.equal("0.0");
+
+    positions[9].opacity.should.equal("0.0");
+    positions[10].opacity.should.equal("1.0");
+    positions[11].opacity.should.equal("0.0");
   });
 
   it('should select notes', function() {
@@ -79,6 +83,19 @@ describe('#fretboard', function() {
     fb = fretboard.selectPositionId(fb, "11");
     fb = fretboard.selectPositionId(fb, "11");
     fb.chorddef.frets[5].should.equal(0);
+  });
+
+  it('should mute a string', function() {
+    positions = fretboard.getFingerPositions({ frets:[-1,0,2,0,0,0] });
+    positions.length.should.equal(2);
+    positions[0].cy.should.equal(4);
+    positions[0].cx.should.equal(7);
+    positions[0].opacity.should.equal("0.0");
+    positions[0].mute.should.equal(true);
+    positions[1].cy.should.equal(18);
+    positions[1].cx.should.equal(22);
+    positions[1].opacity.should.equal("1.0");
+    positions[1].mute.should.equal(false);
   });
 
 });

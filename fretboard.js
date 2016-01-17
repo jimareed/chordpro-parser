@@ -9,10 +9,14 @@ module.exports = {
     positions = [];
 
     for (i = 0; i < frets.length; i++) {
+      if (frets[i] == -1) { // muted string
+        position = note2position({ string:i , fret:0 });
+        positions.push({ cx:position.cx , cy:position.cy , selected:"1.0" , opacity:"0.0" , mute:true });        
+      }
       if (frets[i] > 0) {
         position = note2position({ string:i , fret:frets[i]});
 
-        positions.push({ cx:position.cx , cy:position.cy });
+        positions.push({ cx:position.cx , cy:position.cy , selected:"1.0" , opacity:"1.0" , mute:false });
       }
     }
     return positions;
@@ -26,7 +30,7 @@ module.exports = {
       for (s = 0; s < 6; s++) {
         position = note2position({ string:s , fret:f});
 
-        positions.push({ string:s , fret:f , cx:position.cx , cy:position.cy , selected:"0.0"});
+        positions.push({ string:s , fret:f , cx:position.cx , cy:position.cy , selected:"0.0" , opacity:"0.0" , mute:false });
       }
     }
 
@@ -36,6 +40,7 @@ module.exports = {
       for (i = 0; i < frets.length; i++) {
         if (positions[p].string == i && frets[i] > 0 && positions[p].fret == frets[i]) {
           positions[p].selected = "1.0";
+          positions[p].opacity = "1.0";
         }
       }
     }
@@ -55,10 +60,12 @@ module.exports = {
 
     for (i = 0; i < ps.length; i++) {
       fretboard.positions[ps[i]].selected = "0.0";
+      fretboard.positions[ps[i]].opacity = "0.0";
     }
 
     if (!isSelected) {
       fretboard.positions[pid].selected = "1.0";
+      fretboard.positions[pid].opacity = "1.0";
     }
 
     note = positionId2note(pid);
