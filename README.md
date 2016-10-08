@@ -2,7 +2,7 @@
 
 ## description
 
-Javascript library to parse chordpro files like:
+JavaScript library to parse chordpro files like:
 ```
 {t:Greensleeves}
 {st:Traditional}
@@ -32,8 +32,6 @@ it('should parse title and artist', function() {
 
 it('should parse lyrics', function() {
   song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\nA[Am]las my [C]love,\nyou [G]do me [Em]wrong,\nto [Am]cast me off so dis[E]courteously.\n");
-  song.title.should.equal("Greensleeves");
-  song.artist.should.equal("Traditional");
   song.lyrics.length.should.equal(3);
   song.lyrics[0].should.equal("Alas my love,");
   song.lyrics[1].should.equal("you do me wrong,");
