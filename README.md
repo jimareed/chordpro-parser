@@ -1,4 +1,4 @@
-# chordpro
+# chordpro-parser
 
 ## description
 
