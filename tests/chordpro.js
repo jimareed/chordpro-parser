@@ -220,4 +220,24 @@ describe('#chordpro', function() {
     song2.chords[3].name.should.equal("D");
   });
 
+  it('should rename chords', function() {
+    song = chordpro.fromString("{title:Greensleeves}\n{st:Traditional}\n{define: Am base-fret 0 frets x 0 2 2 1 0}\nA[Am]las my [C]love,\nyou [G]do me [Em]wrong,\nto [Am]cast me off so dis[E]courteously.\n");
+    song2 = chordpro.renameChord(song, "Am", "Am7");
+    song2.chords.length.should.equal(6);
+    song2.chords[0].name.should.equal("Am7");
+    song2.chords[0].line.should.equal(0);
+    song2.chords[0].col.should.equal(1);
+    song2.chords[1].name.should.equal("C");
+    song2.chords[1].line.should.equal(0);
+    song2.chords[1].col.should.equal(8);
+    song2.chords[2].name.should.equal("G");
+    song2.chords[3].name.should.equal("Em");
+    song2.chords[4].name.should.equal("Am7");
+    song2.chords[5].name.should.equal("E");
+
+    song2.chorddefs.length.should.equal(1);
+    song2.chorddefs[0].name.should.equal("Am7");
+
+  });
+
 });
