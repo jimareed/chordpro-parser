@@ -240,30 +240,59 @@ describe('#chordpro', function() {
 
   });
 
-  it('should work with a larger song', function() {
-    song = chordpro.fromString(
-      "{t:Have Yourself A Merry Little Christmas}\n" +
-      "{st:Frank Sinatra}\n" +
-      "[G]Have your[Em]self a[Am] merry littl[D7]e Christmas\n" +
-      "[G]Let your [Em]heart be[Am] ligh[D7]t\n" +
-      "[G]From now [Em]on, our[Am] troubles will b[D7]e out [B7]of s[E7]igh[A7]t  [D7]\n" +
-      "[G]Have your[Em]self a[Am] merry littl[D7]e Christmas\n" +
-      "[G]Make the [Em]Yuletide[Am] ga[D7]y\n" +
-      "[G]From now [Em]on, our[Am] troubles will b[B7]e mil[Em]es away   [G]\n" +
-      "[C]Here were are as in [Bm]olden days\n" +
-      "[Am]happy gold[D7]en [Gmaj7]days of yore\n" +
-      "[Em]Faithful[F#7] friends who ar[Bm]e dear to us\n" +
-      "[D]gather nea[Em]r to us[Am]  o[D7]nce more\n" +
-      "[G]Through the [Em]years we[Am] all will b[D7]e together\n" +
-      "[G]If the [Em]Fates a[Am]llo[D7]w\n" +
-      "[G]Hang a [Em]shining[Am] star upon th[D7]e highe[Em]st bough\n" +
-      "[C]And have yoursel[Am]f a merry li[D7]ttle Chri[G]stmas now.\n"
-    );
+  it('should parse sections', function() {
 
-    song.chords.length.should.equal(59);
-    song.lyrics.length.should.equal(14);
+    songString =
+    "{t:Greensleeves}\n" +
+    "{st:Traditional}\n" +
+    "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
+    "Verse 1\n" +
+    "A[Am]las, my [C]love, you [G]do me [Em]wrong,\n" +
+    "to [Am]cast me off disc[E]ourteously.\n" +
+    "For [Am]I have [C]loved you [G]well and [Em]long,\n" +
+    "de[Am]lighting [E7]in your [Am]company.\n" +
+    "Verse 2\n" +
+    "[C]Greensleeves was [G]all my [Em]joy,\n" +
+    "[Am]Greensleeves was [E]my delight\n" +
+    "[C]Greensleeves was my [G]heart of [Em]gold,\n" +
+    "and [Am]who but my [E7]lady [Am]greensleeves.\n";
+
+    song = chordpro.fromString(songString);
+
+    song.chords.length.should.equal(24);
+    song.lyrics.length.should.equal(10);
+    song.sections.length.should.equal(2);
+    song.sections[0].start.should.equal(0);
+    song.sections[0].end.should.equal(4);
+    song.sections[1].start.should.equal(5);
+    song.sections[1].end.should.equal(9);
+
+    newSongString = chordpro.toString(song);
+    newSongString.should.equal(songString);
   });
 
+  it('should get a section', function() {
+
+    songString =
+    "{t:Greensleeves}\n" +
+    "{st:Traditional}\n" +
+    "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
+    "Verse 1\n" +
+    "A[Am]las, my [C]love, you [G]do me [Em]wrong,\n" +
+    "to [Am]cast me off disc[E]ourteously.\n" +
+    "For [Am]I have [C]loved you [G]well and [Em]long,\n" +
+    "de[Am]lighting [E7]in your [Am]company.\n" +
+    "Verse 2\n" +
+    "[C]Greensleeves was [G]all my [Em]joy,\n" +
+    "[Am]Greensleeves was [E]my delight\n" +
+    "[C]Greensleeves was my [G]heart of [Em]gold,\n" +
+    "and [Am]who but my [E7]lady [Am]greensleeves.\n";
+
+    song = chordpro.fromString(songString);
+
+    section = chordpro.getSection(song, 0);
+    section.title.should.equal("Verse 1");
+  });
 
 
 });
