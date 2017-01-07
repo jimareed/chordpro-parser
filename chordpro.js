@@ -204,7 +204,7 @@ module.exports = {
     for(ci = 0; ci < song.chords.length; ci++) {
       if (song.sections[id].start <= song.chords[ci].line && song.chords[ci].line <= song.sections[id].end) {
         var newChord = { line:song.chords[ci].line , col:song.chords[ci].col , name:song.chords[ci].name };
-        newChord.line -= song.sections[id].start;
+        newChord.line -= (song.sections[id].start+1);
         section.chords.push(newChord);
       }
     }

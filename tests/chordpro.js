@@ -308,7 +308,7 @@ describe('#chordpro', function() {
     section.chords[10].name.should.equal("Am");
 
     section.chords[4].name.should.equal("E");
-    section.chords[4].line.should.equal(2);
+    section.chords[4].line.should.equal(1);
     section.chords[4].col.should.equal(17);
   });
 
