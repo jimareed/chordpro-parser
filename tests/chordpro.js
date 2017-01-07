@@ -1,6 +1,22 @@
 var should = require('chai').should(),
     chordpro = require('../chordpro')
 
+var GREENSLEEVES =
+    "{t:Greensleeves}\n" +
+    "{st:Traditional}\n" +
+    "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
+    "Verse 1\n" +
+    "A[Am]las, my [C]love, you [G]do me [Em]wrong,\n" +
+    "to [Am]cast me off disc[E]ourteously.\n" +
+    "For [Am]I have [C]loved you [G]well and [Em]long,\n" +
+    "de[Am]lighting [E7]in your [Am]company.\n" +
+    "Verse 2\n" +
+    "[C]Greensleeves was [G]all my [Em]joy,\n" +
+    "[Am]Greensleeves was [E]my delight\n" +
+    "[C]Greensleeves was my [G]heart of [Em]gold,\n" +
+    "and [Am]who but my [E7]lady [Am]greensleeves.\n";
+
+
 describe('#chordpro', function() {
 
   it('should parse title and artist', function() {
@@ -242,22 +258,7 @@ describe('#chordpro', function() {
 
   it('should parse sections', function() {
 
-    songString =
-    "{t:Greensleeves}\n" +
-    "{st:Traditional}\n" +
-    "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
-    "Verse 1\n" +
-    "A[Am]las, my [C]love, you [G]do me [Em]wrong,\n" +
-    "to [Am]cast me off disc[E]ourteously.\n" +
-    "For [Am]I have [C]loved you [G]well and [Em]long,\n" +
-    "de[Am]lighting [E7]in your [Am]company.\n" +
-    "Verse 2\n" +
-    "[C]Greensleeves was [G]all my [Em]joy,\n" +
-    "[Am]Greensleeves was [E]my delight\n" +
-    "[C]Greensleeves was my [G]heart of [Em]gold,\n" +
-    "and [Am]who but my [E7]lady [Am]greensleeves.\n";
-
-    song = chordpro.fromString(songString);
+    song = chordpro.fromString(GREENSLEEVES);
 
     song.chords.length.should.equal(24);
     song.lyrics.length.should.equal(10);
@@ -268,31 +269,47 @@ describe('#chordpro', function() {
     song.sections[1].end.should.equal(9);
 
     newSongString = chordpro.toString(song);
-    newSongString.should.equal(songString);
+    newSongString.should.equal(GREENSLEEVES);
   });
 
   it('should get a section', function() {
 
-    songString =
-    "{t:Greensleeves}\n" +
-    "{st:Traditional}\n" +
-    "{define: Am base-fret 0 frets x 0 2 2 1 0}\n" +
-    "Verse 1\n" +
-    "A[Am]las, my [C]love, you [G]do me [Em]wrong,\n" +
-    "to [Am]cast me off disc[E]ourteously.\n" +
-    "For [Am]I have [C]loved you [G]well and [Em]long,\n" +
-    "de[Am]lighting [E7]in your [Am]company.\n" +
-    "Verse 2\n" +
-    "[C]Greensleeves was [G]all my [Em]joy,\n" +
-    "[Am]Greensleeves was [E]my delight\n" +
-    "[C]Greensleeves was my [G]heart of [Em]gold,\n" +
-    "and [Am]who but my [E7]lady [Am]greensleeves.\n";
+    sectionLyrics = [
+      "Greensleeves was all my joy," ,
+      "Greensleeves was my delight" ,
+      "Greensleeves was my heart of gold," ,
+      "and who but my lady greensleeves."
+    ];
 
-    song = chordpro.fromString(songString);
+    song = chordpro.fromString(GREENSLEEVES);
 
     section = chordpro.getSection(song, 0);
     section.title.should.equal("Verse 1");
+
+    section = chordpro.getSection(song, 1);
+    section.title.should.equal("Verse 2");
+
+    section.lyrics[0].should.equal(sectionLyrics[0]);
+    section.lyrics[1].should.equal(sectionLyrics[1]);
+    section.lyrics[2].should.equal(sectionLyrics[2]);
+    section.lyrics[3].should.equal(sectionLyrics[3]);
   });
 
+
+  it('should get section chords', function() {
+
+    song = chordpro.fromString(GREENSLEEVES);
+
+    section = chordpro.getSection(song, 1);
+
+    section.chords.length.should.equal(11);
+    section.chords[0].name.should.equal("C");
+    section.chords[1].name.should.equal("G");
+    section.chords[10].name.should.equal("Am");
+
+    section.chords[4].name.should.equal("E");
+    section.chords[4].line.should.equal(2);
+    section.chords[4].col.should.equal(17);
+  });
 
 });
