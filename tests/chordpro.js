@@ -312,4 +312,52 @@ describe('#chordpro', function() {
     section.chords[4].col.should.equal(17);
   });
 
+  it('should move a chord', function() {
+
+    song = chordpro.fromString(GREENSLEEVES);
+
+    song.chords[1].name.should.equal("C");
+    song.chords[1].line.should.equal(1);
+    song.chords[1].col.should.equal(9);
+
+    song = chordpro.moveChord(song, { name:"C" , line:1, col:9 } , { name:"C" , line:1, col:10 });
+
+    song.chords[1].name.should.equal("C");
+    song.chords[1].line.should.equal(1);
+    song.chords[1].col.should.equal(10);
+
+  });
+
+  it('should copy chords', function() {
+
+    var TWOVERSESONG =
+        "{t:Greensleeves}\n" +
+        "{st:Traditional}\n" +
+        "Verse 1\n" +
+        "A[Am]las, my [C]love, you [G]do me [Em]wrong,\n" +
+        "to [Am]cast me off disc[E]ourteously.\n" +
+        "For [Am]I have [C]loved you [G]well and [Em]long,\n" +
+        "de[Am]lighting [E7]in your [Am]company.\n" +
+        "Verse 2\n" +
+        "Greensleeves was all my joy,\n" +
+        "Greensleeves was my delight\n" +
+        "Greensleeves was my heart of gold,\n" +
+        "and who but my lady greensleeves.\n";
+
+    song = chordpro.fromString(TWOVERSESONG);
+
+    song.chords.length.should.equal(13);
+    song.chords[1].line.should.equal(1);
+    song.chords[12].line.should.equal(4);
+
+    song = chordpro.copyChords(song, 0, 1);
+
+    song.chords.length.should.equal(26);
+    song.chords[1].line.should.equal(1);
+    song.chords[12].line.should.equal(4);
+    song.chords[13].line.should.equal(6);
+    song.chords[25].line.should.equal(9);
+
+  });
+
 });
