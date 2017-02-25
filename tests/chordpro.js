@@ -350,7 +350,9 @@ describe('#chordpro', function() {
     song.chords[1].line.should.equal(1);
     song.chords[12].line.should.equal(4);
 
-    song = chordpro.copyChords(song, 0, 1);
+    section = chordpro.getSection(song, 0);
+
+    song = chordpro.copyChords(song, section, 1);
 
     song.chords.length.should.equal(26);
     song.chords[1].line.should.equal(1);
