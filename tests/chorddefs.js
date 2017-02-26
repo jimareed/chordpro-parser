@@ -3,7 +3,7 @@ var should = require('chai').should(),
 
 describe('#chorddefs', function() {
 
-  it('getdefs', function() {
+  it('should get defs', function() {
 
     defs = chorddefs.getdefs(["Am"]);
     defs.length.should.equal(1);
@@ -20,7 +20,7 @@ describe('#chorddefs', function() {
     defs[1].define.should.equal("{define: Am base-fret 0 frets x 0 2 2 1 0}");
   });
 
-  it('toString', function() {
+  it('should convert defs toString', function() {
 
     defs = chorddefs.getdefs(["G", "Am"]);
     string = chorddefs.toString(defs);
@@ -28,6 +28,23 @@ describe('#chorddefs', function() {
     string.should.equal(
       "{define: G base-fret 0 frets 3 2 0 0 0 3}\n" +
       "{define: Am base-fret 0 frets x 0 2 2 1 0}\n");
+  });
+
+  it('should sort defs', function() {
+
+    defs = chorddefs.sort();
+
+/*
+    for (i = 0; i < defs.length; i++) {
+      console.log("  { rank:0, name:\"" +
+                  defs[i].name +
+                  "\", define:\"" +
+                  defs[i].define +
+                  "\" },");
+    }
+*/
+
+    defs[0].name.should.equal("Ab");
   });
 
 });
